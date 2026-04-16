@@ -2,7 +2,7 @@
 
 A proof-of-concept tool that generates email filter strings for international students admitted to Swedish universities. Select your university, copy the filter string, and paste it into Gmail, Outlook, or any email client to automatically label and highlight emails from your university, the Swedish Institute, the Migration Agency, and Ladok.
 
-**[Live Demo](https://k-dgit.github.io/swedish-uni-email-filters/)** (update this URL after enabling GitHub Pages)
+**[Live Demo](https://k-dgit.github.io/swedish-uni-email-filters/)** 
 
 ## What it does
 
