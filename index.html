@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Filter Generator for International Students in Sweden</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #005293;
+    --blue-light: #e8f0f8;
+    --blue-mid: #b8d4ea;
+    --yellow: #fecb00;
+    --yellow-light: #fef9e6;
+    --text: #1a1a1a;
+    --text-secondary: #444444;
+    --border: #cccccc;
+    --bg: #ffffff;
+    --bg-off: #f5f5f5;
+    --focus: #005293;
+  }
+  body {
+    background-color: #ffffff;
+    background: #ffffff;
+    color: var(--text);
+    font-family: 'Helvetica Neue', Helvetica, Arial, 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1.25rem 5rem;
+  }
+
+  body::before {
+    content: '';
+    display: block;
+    height: 5px;
+    background: linear-gradient(90deg, var(--blue) 0%, var(--blue) 38%, var(--yellow) 38%, var(--yellow) 62%, var(--blue) 62%, var(--blue) 100%);
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* Header */
+  .header {
+    padding: 2.5rem 0 2rem;
+    border-bottom: 3px solid var(--blue);
+    margin-bottom: 2rem;
+  }
+  .flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .flag-icon {
+    width: 1.75rem;
+    height: 1.125rem;
+    background: var(--blue);
+    position: relative;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .flag-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0.5rem;
+    width: 0.25rem;
+    height: 100%;
+    background: var(--yellow);
+  }
+  .flag-icon::after {
+    content: '';
+    position: absolute;
+    top: 0.4375rem;
+    left: 0;
+    width: 100%;
+    height: 0.25rem;
+    background: var(--yellow);
+  }
+  .flag span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.075rem;
+  }
+  .header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -0.02rem;
+    margin-bottom: 0.5rem;
+  }
+  .header p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    max-width: 32rem;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+  }
+  .tab.active {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+  }
+  .tab:hover { color: var(--text); }
+
+  /* Form */
+  .field-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.375rem;
+  }
+  .search-wrap { position: relative; margin-bottom: 1.5rem; }
+  input[type="text"] {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+    font-size: 1rem;
+    font-family: inherit;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 0.375rem;
+    color: var(--text);
+    outline: none;
+  }
+  input[type="text"]:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0, 82, 147, 0.15);
+  }
+  input::placeholder { color: #767676; }
+
+  /* Dropdown */
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 0.375rem;
+    max-height: 18.75rem;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+    display: none;
+  }
+  .dropdown.open { display: block; }
+  .dd-item {
+    padding: 0.625rem 0.875rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dd-item:last-child { border-bottom: none; }
+  .dd-item:hover,
+  .dd-item:focus { background: var(--blue-light); }
+  .dd-item .meta {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  /* Cards */
+  .card {
+    border: 2px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .card-head {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    margin-bottom: 0.875rem;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .row:last-child { border-bottom: none; }
+  .row code {
+    font-family: 'SF Mono', 'Consolas', 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 0.8125rem;
+    background: var(--blue-light);
+    color: var(--blue);
+    padding: 0.1875rem 0.5rem;
+    border-radius: 0.25rem;
+    white-space: nowrap;
+  }
+  .row .note {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    text-align: right;
+  }
+
+  /* Filter output */
+  .filter-box {
+    background: var(--bg-off);
+    border: 2px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+  }
+  .filter-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    margin-bottom: 0.375rem;
+  }
+  .filter-out {
+    background: var(--bg);
+    border: 2px solid var(--blue-mid);
+    border-radius: 0.375rem;
+    padding: 0.75rem 0.875rem;
+    position: relative;
+    margin-bottom: 0.375rem;
+  }
+  .filter-out code {
+    font-family: 'SF Mono', 'Consolas', 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 0.8125rem;
+    color: var(--blue);
+    word-break: break-all;
+    line-height: 1.8;
+    display: block;
+    padding-right: 4rem;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--blue);
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .copy-btn.done { background: #2e7d32; }
+  .filter-hint {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+
+  /* Info boxes */
+  .info {
+    padding: 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+  }
+  .info-blue {
+    background: var(--blue-light);
+    border-left: 4px solid var(--blue);
+    color: var(--text);
+  }
+  .info-yellow {
+    background: var(--yellow-light);
+    border-left: 4px solid #b8960a;
+    color: var(--text);
+  }
+  .info strong { color: var(--blue); }
+  .info-yellow strong { color: #5c4b00; }
+
+  /* Steps */
+  .step {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-n {
+    width: 1.875rem;
+    height: 1.875rem;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+  .step-t {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .step-d {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .check-list { margin: 0.5rem 0; padding: 0; list-style: none; }
+  .check-list li {
+    padding: 0.25rem 0 0.25rem 1.75rem;
+    position: relative;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+  .check-list li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* Typography */
+  h2 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 1.5rem 0 0.75rem;
+  }
+  .section-p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  /* Quick picks */
+  .qp { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 1rem; }
+  .qp span {
+    padding: 0.375rem 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6.25rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .qp span:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  .empty {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+  }
+
+  /* Back button */
+  .back-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.625rem 1.5rem;
+    border: 2px solid var(--blue);
+    border-radius: 0.375rem;
+    color: var(--blue);
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    background: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .back-link:hover { background: var(--blue-light); }
+
+  /* Platform tabs */
+  .platform-tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .platform-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: inherit;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .platform-tab.active {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+  }
+  .platform-content { display: none; }
+  .platform-content.active { display: block; }
+
+  /* Disclaimer */
+  .disclaimer {
+    margin-top: 2.5rem;
+    padding: 1.25rem;
+    border: 2px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--bg-off);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .disclaimer strong { color: var(--text); }
+  .disclaimer a { color: var(--blue); }
+
+  .hidden { display: none; }
+
+  @media (max-width: 480px) {
+    .header h1 { font-size: 1.5rem; }
+    .tabs { gap: 0; }
+    .tab { padding: 0.625rem 0.75rem; font-size: 0.8125rem; }
+    .row { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+    .row .note { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="header">
+    <div class="flag" aria-hidden="true"><div class="flag-icon"></div><span>Study in Sweden</span></div>
+    <h1>Email Filter Generator</h1>
+    <p>Automatically label and highlight emails from your Swedish university, the Swedish Institute, and the Migration Agency. Set it up once, never miss a deadline.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Main sections">
+    <button class="tab active" id="tab-btn-gen" role="tab" aria-selected="true" aria-controls="p-gen" onclick="switchTab('gen')">Filter Generator</button>
+    <button class="tab" id="tab-btn-guide" role="tab" aria-selected="false" aria-controls="p-guide" onclick="switchTab('guide')">Setup Guide</button>
+    <button class="tab" id="tab-btn-security" role="tab" aria-selected="false" aria-controls="p-security" onclick="switchTab('security')">Staying Safe</button>
+  </nav>
+
+  <!-- GENERATOR -->
+  <section id="p-gen" role="tabpanel" aria-labelledby="tab-btn-gen">
+    <div class="search-wrap" id="sw">
+      <label class="field-label" for="si">Select your university</label>
+      <input type="text" id="si" placeholder="Type a university name or city" autocomplete="off" onfocus="showDd()" oninput="filterDd()" role="combobox" aria-expanded="false" aria-autocomplete="list">
+      <div class="dropdown" id="dd" role="listbox"></div>
+    </div>
+
+    <div id="results" class="hidden">
+      <p id="uni-info" style="margin-bottom:1rem;font-size:0.875rem;color:var(--text-secondary);"></p>
+
+      <div class="card">
+        <div class="card-head">Domains included in your filter</div>
+        <div class="row"><code>@si.se</code><span class="note">Swedish Institute (scholarships)</span></div>
+        <div class="row"><code>@migrationsverket.se</code><span class="note">Migration Agency</span></div>
+        <div class="row"><code>@ladok.se</code><span class="note">Ladok (tuition and enrollment)</span></div>
+        <div id="uni-rows"></div>
+      </div>
+
+      <div class="filter-box">
+        <div class="filter-label">Your filter string</div>
+        <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:0.625rem;">Copy this and paste it into the "From" field when creating an email filter. This works in Gmail, Outlook, and most email clients.</p>
+        <div class="filter-out">
+          <code id="fout"></code>
+          <button class="copy-btn" onclick="doCopy(this)" aria-label="Copy filter string to clipboard">Copy</button>
+        </div>
+        <p class="filter-hint">This catches every email sent from your university domain, the Swedish Institute, the Migration Agency, and Ladok, including department emails, housing, and course coordinators.</p>
+      </div>
+
+      <div class="info info-blue" style="margin-top:1rem;">
+        <strong>Why one filter is enough:</strong> Every department, housing office, and coordinator at your university uses the same domain (for example, anything ending in @su.se). This single filter catches them all automatically. See the Setup Guide for how to add addresses from outside your university domain over time.
+      </div>
+    </div>
+
+    <div id="empty">
+      <div class="empty">Select your university above to generate your filter string.</div>
+      <div class="qp" id="qp"></div>
+    </div>
+  </section>
+
+  <!-- GUIDE -->
+  <section id="p-guide" class="hidden" role="tabpanel" aria-labelledby="tab-btn-guide">
+    <h2>How to set up your email filter</h2>
+    <p class="section-p">This takes about two minutes. You only need to do it once. Select your email platform below for step-by-step instructions.</p>
+
+    <div class="platform-tabs" role="tablist" aria-label="Email platform">
+      <button class="platform-tab active" onclick="switchPlatform('gmail')" role="tab" aria-selected="true">Gmail</button>
+      <button class="platform-tab" onclick="switchPlatform('outlook')" role="tab" aria-selected="false">Outlook</button>
+      <button class="platform-tab" onclick="switchPlatform('other')" role="tab" aria-selected="false">Other clients</button>
+    </div>
+
+    <!-- Gmail -->
+    <div class="platform-content active" id="plat-gmail">
+      <div class="card">
+        <div class="step"><div class="step-n">1</div><div><div class="step-t">Create a label</div><div class="step-d">Open Gmail. In the left sidebar, scroll down and click "More", then "Create new label". Name it after your university (for example, "SU-Sweden"). Click Create.</div></div></div>
+        <div class="step"><div class="step-n">2</div><div><div class="step-t">Open the filter creator</div><div class="step-d">In Gmail's search bar at the top, click the filter icon (the sliders icon on the right side of the search bar). This opens the advanced search form.</div></div></div>
+        <div class="step"><div class="step-n">3</div><div><div class="step-t">Paste your filter string</div><div class="step-d">Go to the Filter Generator tab, select your university, and copy the filter string. Back in Gmail, paste it into the "From" field. Click "Create filter" at the bottom right.</div></div></div>
+        <div class="step"><div class="step-n">4</div><div><div class="step-t">Choose your filter actions</div><div class="step-d">On the next screen, select these three options:
+          <ul class="check-list">
+            <li>Star it</li>
+            <li>Apply the label (select the label from step 1)</li>
+            <li>Also apply filter to matching conversations</li>
+          </ul>
+          Click "Create filter".</div></div></div>
+        <div class="step"><div class="step-n">5</div><div><div class="step-t">Verify</div><div class="step-d">Go to Gmail Settings (gear icon), then "See all settings", then the "Filters and Blocked Addresses" tab. Your filter should appear in the list.</div></div></div>
+      </div>
+    </div>
+
+    <!-- Outlook -->
+    <div class="platform-content" id="plat-outlook">
+      <div class="card">
+        <div class="step"><div class="step-n">1</div><div><div class="step-t">Create a folder</div><div class="step-d">In Outlook, right-click "Inbox" in the left sidebar and select "Create new subfolder" (desktop) or "New folder" (web). Name it after your university (for example, "SU-Sweden").</div></div></div>
+        <div class="step"><div class="step-n">2</div><div><div class="step-t">Open Rules settings</div><div class="step-d">In Outlook on the web: click the gear icon (Settings), then "View all Outlook settings", then "Mail", then "Rules". Click "+ Add new rule". In Outlook desktop: go to File, then Manage Rules and Alerts, then New Rule.</div></div></div>
+        <div class="step"><div class="step-n">3</div><div><div class="step-t">Set the condition</div><div class="step-d">Name the rule (for example, "Sweden university emails"). Under "Add a condition", select "From" and enter your university domain (for example, su.se). You will need to create separate rules for each domain: your university domain, si.se, migrationsverket.se, and ladok.se.</div></div></div>
+        <div class="step"><div class="step-n">4</div><div><div class="step-t">Set the actions</div><div class="step-d">Under "Add an action", select:
+          <ul class="check-list">
+            <li>Move to: select the folder from step 1</li>
+            <li>Flag message (to make it stand out)</li>
+          </ul>
+          Note: to keep a copy in your inbox as well, also add the action "Keep a copy in Inbox". Click "Save".</div></div></div>
+        <div class="step"><div class="step-n">5</div><div><div class="step-t">Repeat for each domain</div><div class="step-d">Create one rule per domain. For example: one rule for @su.se, one for @si.se, one for @migrationsverket.se, and one for @ladok.se. All rules should move to the same folder and flag the message.</div></div></div>
+      </div>
+    </div>
+
+    <!-- Other -->
+    <div class="platform-content" id="plat-other">
+      <div class="card">
+        <div class="card-head">General steps for any email client</div>
+        <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;margin-bottom:1rem;">Most email clients (Apple Mail, Thunderbird, Yahoo Mail, ProtonMail, and others) support filtering or rules. The exact steps differ, but the logic is the same:</p>
+        <div class="step"><div class="step-n">1</div><div><div class="step-t">Create a folder or label</div><div class="step-d">Create a dedicated folder or label for your Sweden-related emails. Name it something clear, like "SU-Sweden" or "Sweden Studies".</div></div></div>
+        <div class="step"><div class="step-n">2</div><div><div class="step-t">Find the filter or rules settings</div><div class="step-d">Look for "Filters", "Rules", or "Message rules" in your email client's settings. This is usually found under Settings, Preferences, or Mail preferences.</div></div></div>
+        <div class="step"><div class="step-n">3</div><div><div class="step-t">Create a rule based on sender domain</div><div class="step-d">Set the condition to: "From" contains your university domain (for example, su.se). Then set the action to move or label the email and mark it as important or starred.</div></div></div>
+        <div class="step"><div class="step-n">4</div><div><div class="step-t">Repeat for key domains</div><div class="step-d">Create the same rule for each of the following domains: your university domain, si.se (Swedish Institute), migrationsverket.se (Migration Agency), and ladok.se (student admin system).</div></div></div>
+        <div class="step"><div class="step-n">5</div><div><div class="step-t">Test it</div><div class="step-d">Send yourself a test email or wait for the next incoming message from one of these domains. Confirm it lands in the correct folder with the correct flag or star.</div></div></div>
+      </div>
+    </div>
+
+    <h3>Adding new addresses later</h3>
+    <p class="section-p">Throughout your journey, you may receive study-related emails from addresses outside your university domain. For example, your embassy's migration section, or a form service. Here is how to add them.</p>
+
+    <div class="card">
+      <div class="step"><div class="step-n">1</div><div><div class="step-t">Spot the new sender</div><div class="step-d">When you receive a study-related email from an unfamiliar address, note the full sender address. For example, your embassy might email you from migration.abuja@gov.se, or a form service might send from no-reply@wufoo.com. These are outside your university domain, so the main filter will not catch them.</div></div></div>
+      <div class="step"><div class="step-n">2</div><div><div class="step-t">Verify it is legitimate</div><div class="step-d">Before adding any address, check that it is real. Does the domain match a known institution? If you are unsure, verify with other admitted students on the Goin' app, your university's buddy network, or by contacting your university directly. See the "Staying Safe" tab for guidance on spotting fake emails.</div></div></div>
+      <div class="step"><div class="step-n">3</div><div><div class="step-t">Update your filter or rule</div><div class="step-d">In Gmail: go to Settings, then "Filters and Blocked Addresses", find your filter, click "edit", then "continue", and add the new address with " OR " before it. In Outlook: create a new rule for the new address pointing to the same folder. In other clients: add the address to your existing rule or create a new one with the same action.</div></div></div>
+    </div>
+
+    <div class="info info-blue">
+      <strong>Build the habit:</strong> Every time a new Sweden-related email arrives, check if the sender is caught by your filter. If not, verify the address is legitimate and add it. This takes about 30 seconds and ensures you never miss a deadline buried in your inbox.
+    </div>
+
+    <div style="text-align:center;">
+      <button class="back-link" onclick="switchTab('gen')">&#8592; Back to Filter Generator</button>
+    </div>
+  </section>
+
+  <!-- SECURITY -->
+  <section id="p-security" class="hidden" role="tabpanel" aria-labelledby="tab-btn-security">
+    <h2>Staying safe with email</h2>
+    <p class="section-p">As an international student, you may be targeted by email scams impersonating your university, the Swedish Institute, the Migration Agency, or banks. Here is how to protect yourself.</p>
+
+    <div class="card">
+      <div class="card-head">How to verify an email sender</div>
+      <div class="step"><div class="step-n">1</div><div><div class="step-t">Check the actual email address, not the display name</div><div class="step-d">Anyone can set any display name on an email. In Gmail, click the small arrow next to "to me" under the sender's name to see the real address. In Outlook, hover over or click the sender's name. If the address says something like admissions@stockholmuni-apply.com instead of study@su.se, it is not legitimate.</div></div></div>
+      <div class="step"><div class="step-n">2</div><div><div class="step-t">Verify the domain</div><div class="step-d">Every Swedish university has one primary domain (for example, su.se for Stockholm University, kth.se for KTH). Official emails come from that domain or its subdomains (such as dsv.su.se). If the domain does not match your university, be suspicious. Swedish government agencies use .se domains: si.se, migrationsverket.se, ladok.se.</div></div></div>
+      <div class="step"><div class="step-n">3</div><div><div class="step-t">Never click payment links in emails</div><div class="step-d">Your tuition fee is paid through Ladok at student.ladok.se. Always navigate there directly by typing the URL into your browser, never through a link in an email. The Swedish Migration Agency fee is paid at migrationsverket.se. No legitimate Swedish institution will ask you to pay fees through a link sent by email or to a private bank account.</div></div></div>
+      <div class="step"><div class="step-n">4</div><div><div class="step-t">When in doubt, verify independently</div><div class="step-d">Do not reply to a suspicious email. Instead, go to universityadmissions.se, find your university's official contact email, and ask them directly whether the email was legitimate. You can also check with fellow students on the Goin' app or your university's buddy network.</div></div></div>
+    </div>
+
+    <div class="info info-yellow">
+      <strong>Common scams targeting international students:</strong><br><br>
+      <strong>Fake housing offers:</strong> Someone claims to have an apartment and asks for a deposit before you can view it. Never pay for housing you have not verified in person or by video call.<br><br>
+      <strong>Fake scholarship emails:</strong> An email claims you won a scholarship and requests personal details or bank information. The Swedish Institute publishes results only on si.se, never by unsolicited email.<br><br>
+      <strong>Fake tuition requests:</strong> An email asks you to pay tuition to a different account. Tuition is only paid through student.ladok.se.<br><br>
+      <strong>University impersonation:</strong> An email looks official but uses a slightly different domain (for example, su-university.se instead of su.se). Always check the actual sender address.
+    </div>
+
+    <div style="text-align:center;">
+      <button class="back-link" onclick="switchTab('gen')">&#8592; Back to Filter Generator</button>
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer" role="contentinfo">
+    <strong>Disclaimer</strong><br><br>
+    This tool generates email filter strings using publicly available data from <a href="https://www.universityadmissions.se/en/find-out-more/swedish-universities/" target="_blank" rel="noopener">universityadmissions.se</a>, the official admissions portal managed by the Swedish Council for Higher Education (UHR). University domains and contact emails listed in this tool are sourced directly from that page (last updated 14 October 2025).<br><br>
+    This tool does not verify, endorse, or guarantee the safety of any email communication. Always verify senders independently before acting on requests involving personal information or payments.<br><br>
+    This is a proof of concept. It is not affiliated with, endorsed by, or maintained by UHR, the Swedish Institute, any Swedish university, or the Swedish government.
+  </div>
+</div>
+
+<script>
+// University data verified from:
+// https://www.universityadmissions.se/en/find-out-more/swedish-universities/
+// Page last updated: 14 October 2025
+var U=[
+{n:"Blekinge Institute of Technology",d:"bth.se",c:"Karlskrona",e:"admissions@bth.se"},
+{n:"Chalmers University of Technology",d:"chalmers.se",c:"Gothenburg",e:"admissions@chalmers.se"},
+{n:"Dalarna University",d:"du.se",c:"Falun",e:"support@du.se"},
+{n:"Halmstad University",d:"hh.se",c:"Halmstad",e:"fdia@hh.se"},
+{n:"Johannelund School of Theology",d:"johannelund.nu",c:"Uppsala",e:"info@johannelund.nu"},
+{n:"J\u00f6nk\u00f6ping University",d:"ju.se",c:"J\u00f6nk\u00f6ping",e:"admissions.office@ju.se"},
+{n:"Karlstad University",d:"kau.se",c:"Karlstad",e:"admission@kau.se"},
+{n:"Karolinska Institutet",d:"ki.se",c:"Stockholm",e:"admissions@ki.se"},
+{n:"Konstfack (Univ. of Arts, Crafts and Design)",d:"konstfack.se",c:"Stockholm",e:"admissions@konstfack.se"},
+{n:"Kristianstad University",d:"hkr.se",c:"Kristianstad",e:"info@hkr.se"},
+{n:"KTH Royal Institute of Technology",d:"kth.se",c:"Stockholm",e:"info@kth.se"},
+{n:"Link\u00f6ping University",d:"liu.se",c:"Link\u00f6ping",e:"international.student@liu.se"},
+{n:"Linnaeus University",d:"lnu.se",c:"V\u00e4xj\u00f6 / Kalmar",e:"admission@lnu.se"},
+{n:"Lule\u00e5 University of Technology",d:"ltu.se",c:"Lule\u00e5",e:"universitetet@ltu.se"},
+{n:"Lund University",d:"lu.se",c:"Lund",e:"lant@stu.lu.se"},
+{n:"Malm\u00f6 University",d:"mau.se",c:"Malm\u00f6",e:"info@mau.se"},
+{n:"Marie Cedershi\u00f6ld University",d:"mchs.se",c:"Stockholm",e:"info@mchs.se"},
+{n:"Mid Sweden University",d:"miun.se",c:"Sundsvall",e:"kontakt@miun.se"},
+{n:"M\u00e4lardalen University",d:"mdu.se",c:"V\u00e4ster\u00e5s",e:"info@mdh.se",a:"mdh.se"},
+{n:"Newman Institute",d:"newman.se",c:"Uppsala",e:null},
+{n:"Royal College of Music",d:"kmh.se",c:"Stockholm",e:"antagning@kmh.se"},
+{n:"Royal Institute of Art",d:"kkh.se",c:"Stockholm",e:"info@kkh.se"},
+{n:"Sophiahemmet University",d:"shh.se",c:"Stockholm",e:"info@shh.se"},
+{n:"Stockholm School of Economics",d:"hhs.se",c:"Stockholm",e:"info@hhs.se"},
+{n:"Stockholm University",d:"su.se",c:"Stockholm",e:"study@su.se"},
+{n:"Stockholm University of the Arts",d:"uniarts.se",c:"Stockholm",e:"info@uniarts.se"},
+{n:"Swedish Defence University",d:"fhs.se",c:"Stockholm",e:"masterprogramme@fhs.se"},
+{n:"Swedish Red Cross University",d:"rkh.se",c:"Stockholm",e:"info@rkh.se"},
+{n:"Swedish School of Sport and Health Sciences",d:"gih.se",c:"Stockholm",e:"international@gih.se"},
+{n:"Swedish University of Agricultural Sciences",d:"slu.se",c:"Uppsala",e:"admissions@slu.se"},
+{n:"S\u00f6dert\u00f6rn University",d:"sh.se",c:"Stockholm",e:"info@sh.se"},
+{n:"Ume\u00e5 University",d:"umu.se",c:"Ume\u00e5",e:null},
+{n:"University College Stockholm",d:"ehs.se",c:"Stockholm",e:"info@ehs.se"},
+{n:"University of Bor\u00e5s",d:"hb.se",c:"Bor\u00e5s",e:"admissions@hb.se"},
+{n:"University of Gothenburg",d:"gu.se",c:"Gothenburg",e:"info@gu.se"},
+{n:"University of G\u00e4vle",d:"hig.se",c:"G\u00e4vle",e:"registrator@hig.se"},
+{n:"University of Sk\u00f6vde",d:"his.se",c:"Sk\u00f6vde",e:"admission@his.se"},
+{n:"University West",d:"hv.se",c:"Trollh\u00e4ttan",e:"admission@hv.se"},
+{n:"Uppsala University",d:"uu.se",c:"Uppsala",e:"masterprogrammes@uu.se"},
+{n:"\u00d6rebro University",d:"oru.se",c:"\u00d6rebro",e:"freemover@oru.se"}
+];
+var GD=["@si.se","@migrationsverket.se","@ladok.se"];
+var sel=null;
+
+// Quick picks
+var QP=["Stockholm University","KTH Royal Institute of Technology","Lund University","Uppsala University","Chalmers University of Technology","Karolinska Institutet","Link\u00f6ping University","University of Gothenburg"];
+var qpEl=document.getElementById("qp");
+QP.forEach(function(nm){
+  var s=document.createElement("span");
+  s.textContent=nm;
+  s.setAttribute("role","button");
+  s.setAttribute("tabindex","0");
+  s.onclick=function(){pick(nm)};
+  s.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(nm)}};
+  qpEl.appendChild(s);
+});
+
+var dd=document.getElementById("dd");
+var si=document.getElementById("si");
+
+function showDd(){filterDd();dd.classList.add("open");si.setAttribute("aria-expanded","true")}
+document.addEventListener("click",function(e){
+  if(!document.getElementById("sw").contains(e.target)){
+    dd.classList.remove("open");
+    si.setAttribute("aria-expanded","false");
+  }
+});
+
+function filterDd(){
+  var q=si.value.toLowerCase();
+  var hits=U.filter(function(u){return u.n.toLowerCase().indexOf(q)>-1||u.c.toLowerCase().indexOf(q)>-1});
+  dd.innerHTML="";
+  hits.forEach(function(u){
+    var d=document.createElement("div");
+    d.className="dd-item";
+    d.setAttribute("role","option");
+    d.innerHTML='<span>'+u.n+'</span><span class="meta">'+u.c+'</span>';
+    d.onclick=function(){pick(u.n)};
+    dd.appendChild(d);
+  });
+  if(hits.length){dd.classList.add("open");si.setAttribute("aria-expanded","true")}
+  else{dd.classList.remove("open");si.setAttribute("aria-expanded","false")}
+}
+
+function pick(nm){
+  var u=U.find(function(x){return x.n===nm});
+  if(!u)return;
+  sel=u;
+  si.value=u.n;
+  dd.classList.remove("open");
+  si.setAttribute("aria-expanded","false");
+  document.getElementById("results").classList.remove("hidden");
+  document.getElementById("empty").classList.add("hidden");
+  document.getElementById("uni-info").textContent=u.c+" \u2022 "+u.d;
+  var r='<div class="row"><code>@'+u.d+'</code><span class="note">'+u.n+' (all senders)</span></div>';
+  if(u.a)r+='<div class="row"><code>@'+u.a+'</code><span class="note">Alternate domain</span></div>';
+  if(u.e)r+='<div class="row"><code>'+u.e+'</code><span class="note">Official contact (from universityadmissions.se)</span></div>';
+  document.getElementById("uni-rows").innerHTML=r;
+  var p=GD.slice();
+  p.push("@"+u.d);
+  if(u.a)p.push("@"+u.a);
+  document.getElementById("fout").textContent=p.join(" OR ");
+}
+
+function doCopy(btn){
+  var t=document.getElementById("fout").textContent;
+  navigator.clipboard.writeText(t).then(function(){
+    btn.textContent="\u2713 Copied";
+    btn.classList.add("done");
+    setTimeout(function(){btn.textContent="Copy";btn.classList.remove("done")},2000);
+  });
+}
+
+function switchTab(id){
+  ["gen","guide","security"].forEach(function(t){
+    document.getElementById("p-"+t).classList.toggle("hidden",t!==id);
+    var btn=document.getElementById("tab-btn-"+t);
+    btn.classList.toggle("active",t===id);
+    btn.setAttribute("aria-selected",t===id?"true":"false");
+   });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function switchPlatform(id){
+  ["gmail","outlook","other"].forEach(function(p){
+    var el=document.getElementById("plat-"+p);
+    if(el){el.classList.toggle("active",p===id)}
+  });
+  document.querySelectorAll(".platform-tab").forEach(function(btn){
+    var isActive=(id==="gmail"&&btn.textContent==="Gmail")||(id==="outlook"&&btn.textContent==="Outlook")||(id==="other"&&btn.textContent==="Other clients");
+    btn.classList.toggle("active",isActive);
+    btn.setAttribute("aria-selected",isActive?"true":"false");
+  });
+}
+</script>
+</body>
+</html>
